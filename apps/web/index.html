@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Local hybrid RAG for Japanese AI patent intelligence" />
+    <title>JP Patent Intelligence</title>
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="JP Patent Intelligence home">
+        <span class="brand-mark">JP</span>
+        <span><strong>PATENT INTELLIGENCE</strong><small>Evidence-first RAG</small></span>
+      </a>
+      <div class="system-badges">
+        <a class="badge audit-link" href="/audit">AUDIT TRAIL ↗</a>
+        <span class="badge badge-local"><i></i> $0 · LOCAL ONLY</span>
+        <span class="badge" id="auditStatus">AUDIT CHECK</span>
+        <span class="badge" id="systemStatus">SYSTEM CHECK</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow">JAPANESE AI PATENT RESEARCH / 2004—2020</div>
+        <h1>Ask the corpus.<br /><em>Inspect the evidence.</em></h1>
+        <p class="hero-copy">
+          日本のAI関連公開特許を、語彙検索と多言語ベクトル検索で横断調査。
+          回答の各主張を原文セクションまで追跡できます。
+        </p>
+
+        <div class="query-panel">
+          <div class="query-meta">
+            <label for="query">RESEARCH QUESTION</label>
+            <span><b id="characterCount">0 / 500</b> · CTRL/⌘ + ENTER</span>
+          </div>
+          <textarea id="query" maxlength="500" rows="4" aria-keyshortcuts="Control+Enter Meta+Enter" placeholder="例：機械学習を利用してレーザ加工条件を最適化する発明を比較してください"></textarea>
+          <div class="query-actions">
+            <div class="filter-controls">
+              <div class="language-control actor-control">
+                <label for="actorId">ANALYST</label>
+                <input id="actorId" maxlength="64" value="analyst-01" aria-describedby="actorHelp" />
+              </div>
+              <div class="language-control">
+                <label for="language">ANSWER</label>
+                <select id="language">
+                  <option value="ja">日本語</option>
+                  <option value="ko">한국어</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="language-control">
+                <label for="year">YEAR</label>
+                <select id="year">
+                  <option value="">ALL</option>
+                  <option>2020</option><option>2017</option><option>2014</option>
+                  <option>2011</option><option>2007</option><option>2004</option>
+                </select>
+              </div>
+              <div class="language-control">
+                <label for="section">SECTION</label>
+                <select id="section">
+                  <option value="">ALL</option>
+                  <option value="abstract">ABSTRACT</option>
+                  <option value="claims">CLAIMS</option>
+                  <option value="技術分野">TECH FIELD</option>
+                  <option value="背景技術">BACKGROUND</option>
+                </select>
+              </div>
+            </div>
+            <button class="primary-button" id="askButton">
+              <span>ANALYZE EVIDENCE</span><b>↗</b>
+            </button>
+          </div>
+        </div>
+
+        <div class="examples" aria-label="Example questions">
+          <span>TRY</span>
+          <button data-query="機械学習を用いたレーザ加工技術の課題と解決手段を比較してください">レーザ加工 × ML</button>
+          <button data-query="ニューラルネットワークを利用する画像認識発明にはどのような特徴がありますか">画像認識</button>
+          <button data-query="予知保全における特徴量と学習モデルの利用方法を整理してください">予知保全</button>
+        </div>
+      </section>
+
+      <section class="metrics" aria-label="Corpus statistics">
+        <article><span>CURATED CORPUS</span><strong id="documentCount">46,794</strong><small>year-stratified patents</small></article>
+        <article><span>AI EVIDENCE</span><strong id="aiDocumentCount">—</strong><small>domain-selected documents</small></article>
+        <article><span>SEARCH MODE</span><strong>HYBRID</strong><small>BM25 + dense + RRF</small></article>
+        <article><span>REQUIRED COST</span><strong>$0</strong><small>Docker + local models</small></article>
+      </section>
+
+      <section class="workspace hidden" id="workspace" aria-live="polite">
+        <div class="workspace-head">
+          <div><span class="section-number">01</span><h2>ANALYST BRIEF</h2></div>
+          <div class="timing" id="timing"></div>
+        </div>
+        <div class="answer-card">
+          <div class="answer-status"><span id="answerMode">GROUNDED ANSWER</span><span id="reviewStatus"></span><span id="modelName"></span></div>
+          <div class="answer-body" id="answerBody"></div>
+          <div class="review-panel hidden" id="reviewPanel">
+            <div class="review-copy">
+              <span>HUMAN-IN-THE-LOOP / REQUIRED</span>
+              <strong>Review this draft before operational use.</strong>
+              <small id="actorHelp">Reviewer and analyst labels must differ. Labels are local workflow identifiers, not authenticated identities.</small>
+            </div>
+            <div class="audit-receipt"><span>AUDIT RECEIPT</span><code id="auditReceipt"></code></div>
+            <div class="reviewer-control">
+              <label for="reviewerId">REVIEWER LABEL</label>
+              <input id="reviewerId" maxlength="64" value="reviewer-01" />
+            </div>
+            <textarea id="reviewNotes" rows="2" maxlength="1000" placeholder="Optional review note / 修正理由"></textarea>
+            <div class="review-actions">
+              <button data-decision="approved">APPROVE</button>
+              <button data-decision="needs_revision">REQUEST REVISION</button>
+              <button data-decision="rejected">REJECT</button>
+            </div>
+            <div class="review-result" id="reviewResult"></div>
+          </div>
+          <div class="disclaimer" id="disclaimer"></div>
+        </div>
+
+        <div class="workspace-head evidence-head">
+          <div><span class="section-number">02</span><h2>SOURCE EVIDENCE</h2></div>
+          <div class="source-count" id="sourceCount"></div>
+        </div>
+        <div class="source-grid" id="sourceGrid"></div>
+      </section>
+
+      <section class="loading hidden" id="loading">
+        <div class="loader-orbit"><i></i></div>
+        <strong>RETRIEVING &amp; SYNTHESIZING</strong>
+        <span>Local BM25 → multilingual vectors → Ollama</span>
+      </section>
+
+      <section class="error hidden" id="errorPanel">
+        <strong>REQUEST COULD NOT BE COMPLETED</strong>
+        <p id="errorText"></p>
+      </section>
+    </main>
+
+    <dialog id="sourceDialog">
+      <button class="dialog-close" id="dialogClose" aria-label="Close">×</button>
+      <div id="dialogContent"></div>
+    </dialog>
+
+    <footer>
+      <span>JP PATENT INTELLIGENCE RAG / PORTFOLIO BUILD</span>
+      <span>CC BY 4.0 CORPUS · APACHE-2.0 CODE</span>
+    </footer>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

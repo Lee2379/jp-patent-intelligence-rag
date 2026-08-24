@@ -1,0 +1,32 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local configuration
+.env
+
+# Downloaded corpora and generated indexes are reproducible, not versioned.
+data/raw/
+data/curated/
+data/processed/
+artifacts/index*/
+artifacts/cache/
+artifacts/audit/*
+!artifacts/audit/.gitkeep
+artifacts/pilot/
+
+# Generated reports (keep only hand-curated examples in docs/)
+artifacts/reports/*.json
+artifacts/reports/*.html
+artifacts/reports/*.png
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,11 @@
+JP Patent Intelligence RAG
+Copyright 2026 Seojoon Lee
+
+The application code is licensed under Apache License 2.0.
+
+The local demonstration corpus is derived from the NII LLM-jp Corpus v4 Japanese patent
+dataset and is used under Creative Commons Attribution 4.0 International (CC BY 4.0).
+Dataset attribution and sampling details are documented in DATASET_README.md and
+docs/sources/LLM_JP_DATASET_CARD.md.
+
+Third-party models and Python packages remain under their respective licenses.

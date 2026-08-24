@@ -1,0 +1,100 @@
+name: jp-patent-rag
+
+services:
+  ollama:
+    image: ollama/ollama@sha256:57d60e686821ea81a7748a3ec8141308c8b8f95b27105713954abf7a6529e700
+    container_name: jp-patent-ollama
+    restart: unless-stopped
+    ports:
+      # 11435 avoids conflict with an existing host/WSL Ollama instance.
+      - "127.0.0.1:${OLLAMA_HOST_PORT:-11435}:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      OLLAMA_KEEP_ALIVE: 30m
+      OLLAMA_CONTEXT_LENGTH: 8192
+      OLLAMA_NO_CLOUD: "true"
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  model-init:
+    image: ollama/ollama@sha256:57d60e686821ea81a7748a3ec8141308c8b8f95b27105713954abf7a6529e700
+    profiles: ["setup"]
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:1.7b}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        until ollama list >/dev/null 2>&1; do sleep 2; done;
+        ollama pull "$${OLLAMA_MODEL}"
+
+  embedding-init:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    profiles: ["setup"]
+    volumes:
+      - model-cache:/home/app/.cache
+    environment:
+      PATENT_RAG_CACHE_DIR: /home/app/.cache/fastembed
+    entrypoint: ["/app/.venv/bin/python", "-c"]
+    command:
+      - >-
+        from pathlib import Path;
+        from patent_rag.retrieval.dense import DenseIndex;
+        index = DenseIndex.build(
+        ['日本語特許のローカル埋め込み初期化'], cache_dir=Path('/home/app/.cache/fastembed'),
+        batch_size=1);
+        print('Embedding model ready:', index.model_name, index.embeddings.shape)
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    profiles: ["app"]
+    depends_on:
+      ollama:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data/processed:/app/data/processed:ro
+      - ./artifacts/index:/app/artifacts/index:ro
+      - ./artifacts/audit:/app/artifacts/audit
+      - model-cache:/home/app/.cache
+    environment:
+      PATENT_RAG_DATA_DIR: /app/data/processed
+      PATENT_RAG_INDEX_DIR: /app/artifacts/index
+      PATENT_RAG_CACHE_DIR: /home/app/.cache/fastembed
+      PATENT_RAG_AUDIT_DB: /app/artifacts/audit/audit.sqlite3
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:1.7b}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/app/.venv/bin/python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+
+volumes:
+  ollama-data:
+  model-cache:

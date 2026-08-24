@@ -1,0 +1,38 @@
+[
+  {
+    "id": "laser-processing-ko",
+    "language": "ko",
+    "query": "기계학습을 사용해 레이저 가공 조건을 조정하는 일본 특허를 찾아줘",
+    "expected_document_id": "2020151725"
+  },
+  {
+    "id": "laser-processing-en",
+    "language": "en",
+    "query": "Find a Japanese patent that uses machine learning to adjust laser processing conditions",
+    "expected_document_id": "2020151725"
+  },
+  {
+    "id": "rotating-machine-ko",
+    "language": "ko",
+    "query": "회전 기계의 특징량 시계열에서 이상 시작 시점과 수명을 예측하는 기술",
+    "expected_document_id": "2004124765"
+  },
+  {
+    "id": "rotating-machine-en",
+    "language": "en",
+    "query": "Predicting rotating machine lifetime from feature time series and an abnormal-state threshold",
+    "expected_document_id": "2004124765"
+  },
+  {
+    "id": "video-content-ko",
+    "language": "ko",
+    "query": "영상 장면의 특징량을 추출해 관련 콘텐츠를 생성하는 장치",
+    "expected_document_id": "2004015523"
+  },
+  {
+    "id": "video-content-en",
+    "language": "en",
+    "query": "A device that extracts video-scene features to generate related multimedia content",
+    "expected_document_id": "2004015523"
+  }
+]

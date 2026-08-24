@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Local tamper-evident RAG audit trail" />
+    <title>JP Patent RAG Audit Trail</title>
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <link rel="stylesheet" href="/assets/audit.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <span class="brand-mark">JP</span>
+        <span><strong>RAG AUDIT TRAIL</strong><small>Tamper-evident local governance</small></span>
+      </a>
+      <div class="system-badges">
+        <span class="badge badge-local"><i></i> $0 · LOCAL ONLY</span>
+        <span class="badge" id="chainBadge">VERIFYING CHAIN</span>
+      </div>
+    </header>
+
+    <main class="audit-main">
+      <section class="audit-hero">
+        <div class="eyebrow">GOVERNANCE / APPEND-ONLY SQLITE / SHA-256</div>
+        <h1>Every question.<br /><em>Every decision.</em></h1>
+        <p>
+          Prompts, retrieved evidence, generated answers, citations, timing, and human review
+          decisions remain on this laptop and are linked by a verifiable hash chain.
+        </p>
+      </section>
+
+      <section class="audit-kpis">
+        <article><span>CHAIN STATUS</span><strong id="chainStatus">—</strong><small>full event verification</small></article>
+        <article><span>EVENTS CHECKED</span><strong id="eventCount">—</strong><small>append-only records</small></article>
+        <article><span>HEAD HASH</span><strong class="hash-kpi" id="headHash">—</strong><small>latest chain anchor</small></article>
+      </section>
+
+      <section class="audit-table-section">
+        <div class="workspace-head">
+          <div><span class="section-number">01</span><h2>RECENT EVENTS</h2></div>
+          <div class="source-count">LOCAL OPERATOR LABELS / NOT AUTHENTICATED IDENTITIES</div>
+        </div>
+        <div class="audit-table" id="auditTable"></div>
+      </section>
+
+      <section class="audit-note">
+        <strong>CONTROL BOUNDARY</strong>
+        <p>This portfolio has no login provider. <code>actor_id</code> identifies a local workflow label; production identity assurance would require SSO and signed service identities.</p>
+      </section>
+    </main>
+
+    <dialog id="eventDialog">
+      <button class="dialog-close" id="eventClose" aria-label="Close">×</button>
+      <div class="dialog-inner" id="eventDetail"></div>
+    </dialog>
+
+    <footer><span>JP PATENT INTELLIGENCE / AUDIT CONSOLE</span><a href="/">← RETURN TO RESEARCH</a></footer>
+    <script src="/assets/audit.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+{
+  "dataset": {
+    "name": "llm-jp-corpus-v4-ja_patent",
+    "mirror": "https://huggingface.co/datasets/Podtech/llm-jp-corpus-v4-ja_patent",
+    "upstream_owner": "LLM-jp Corpus Building Working Group (NII)",
+    "license": "CC BY 4.0",
+    "estimated_total_documents": 4679385
+  },
+  "sampling": {
+    "method": "year-stratified public-application sample; deterministic SHA-256 ranking of meta.local_path within oversized strata",
+    "publication_kind": "A",
+    "selected_documents": 46794,
+    "selected_percent": 1.000003,
+    "random_seed": null
+  },
+  "files": [
+    {
+      "year": 2004,
+      "source_shard": "0325.jsonl.gz",
+      "source_documents": 22033,
+      "selected_documents": 9803,
+      "path": "data/curated/stratified_1pct/2004.jsonl.gz",
+      "bytes": 72643568,
+      "sha256": "a3d5ffee072dc93c7c8fdd485f4dc57398802e719036939e7beede1246d6e202"
+    },
+    {
+      "year": 2007,
+      "source_shard": "0425.jsonl.gz",
+      "source_documents": 15024,
+      "selected_documents": 9803,
+      "path": "data/curated/stratified_1pct/2007.jsonl.gz",
+      "bytes": 77000467,
+      "sha256": "06fb0ba3bbb5818f98a8a06d78611576d9ef94ee0a7cc778d844701067d2fbf2"
+    },
+    {
+      "year": 2011,
+      "source_shard": "0175.jsonl.gz",
+      "source_documents": 8656,
+      "selected_documents": 8656,
+      "path": "data/curated/stratified_1pct/2011.jsonl.gz",
+      "bytes": 75261468,
+      "sha256": "2136495f40248253b65bd5c1150ace1e02636240731040377c66f25f9048a4c3"
+    },
+    {
+      "year": 2014,
+      "source_shard": "0075.jsonl.gz",
+      "source_documents": 13937,
+      "selected_documents": 9803,
+      "path": "data/curated/stratified_1pct/2014.jsonl.gz",
+      "bytes": 92971067,
+      "sha256": "b7b8a5277295c78af3117d31c75bee49b336f2c12eba1d9c6d4fe84170f15a05"
+    },
+    {
+      "year": 2017,
+      "source_shard": "0500.jsonl.gz",
+      "source_documents": 4312,
+      "selected_documents": 4312,
+      "path": "data/curated/stratified_1pct/2017.jsonl.gz",
+      "bytes": 39621209,
+      "sha256": "37213b34192c1faa4127a6a0a9acc9774342e623bf4ae551e206fb37650d957d"
+    },
+    {
+      "year": 2020,
+      "source_shard": "0025.jsonl.gz",
+      "source_documents": 4417,
+      "selected_documents": 4417,
+      "path": "data/curated/stratified_1pct/2020.jsonl.gz",
+      "bytes": 51364338,
+      "sha256": "e782a203826544fd17a7879d5541fe77f1142b54f175e9c7efb14877e7881d05"
+    }
+  ],
+  "validation": {
+    "valid_json_records": 46794,
+    "invalid_json_records": 0,
+    "empty_text_records": 0,
+    "simple_ai_keyword_candidates": 640
+  }
+}

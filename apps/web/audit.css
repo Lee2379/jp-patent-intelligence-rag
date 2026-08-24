@@ -1,0 +1,30 @@
+.audit-main { padding-bottom: 80px; }
+.audit-hero { padding: 72px 0 42px; }
+.audit-hero h1 { font-size: clamp(52px, 7vw, 88px); }
+.audit-hero p { max-width: 780px; color: var(--muted); line-height: 1.75; }
+.audit-kpis { display: grid; grid-template-columns: .8fr .8fr 1.8fr; gap: 1px; padding: 1px; margin: 18px 0 70px; background: var(--line); }
+.audit-kpis article { min-height: 150px; padding: 22px; background: var(--panel); display: flex; flex-direction: column; }
+.audit-kpis span { color: #777b77; font: 700 10px ui-monospace, monospace; letter-spacing: .12em; }
+.audit-kpis strong { margin-top: auto; color: var(--accent); font-size: 30px; }
+.audit-kpis small { color: var(--muted); font-size: 10px; }
+.audit-kpis .hash-kpi { font: 700 14px/1.4 ui-monospace, monospace; word-break: break-all; }
+.audit-table-section { margin-bottom: 30px; }
+.audit-table { border: 1px solid var(--line); border-top: 0; }
+.audit-row { width: 100%; display: grid; grid-template-columns: 58px 140px 135px 145px 1fr 140px; gap: 14px; align-items: center; padding: 17px 18px; border: 0; border-top: 1px solid var(--line); background: var(--panel); color: var(--ink); text-align: left; }
+.audit-row:first-child { border-top: 0; }
+.audit-row:hover { background: #171b1c; }
+.audit-seq, .audit-type, .audit-actor, .audit-time, .audit-hash { font: 700 10px ui-monospace, monospace; }
+.audit-seq, .audit-time, .audit-hash { color: var(--muted); }
+.audit-type { color: var(--accent); }
+.audit-actor { color: var(--warm); overflow: hidden; text-overflow: ellipsis; }
+.audit-summary { color: #c0c2bc; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.audit-note { padding: 24px; border: 1px solid var(--line); background: #101313; }
+.audit-note strong { color: var(--warm); font: 700 10px ui-monospace, monospace; letter-spacing: .12em; }
+.audit-note p { margin-bottom: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.audit-note code, footer a { color: var(--accent); }
+#eventDetail pre { max-height: 58vh; overflow: auto; white-space: pre-wrap; color: #c7c9c3; font: 11px/1.6 ui-monospace, monospace; }
+@media (max-width: 850px) {
+  .audit-kpis { grid-template-columns: 1fr; }
+  .audit-row { grid-template-columns: 44px 125px 1fr; }
+  .audit-actor, .audit-time, .audit-hash { display: none; }
+}

@@ -1,0 +1,8 @@
+# Use together with compose.yaml on a machine without a supported NVIDIA runtime:
+# docker compose -f compose.yaml -f compose.cpu.yaml up -d ollama
+services:
+  ollama:
+    deploy:
+      resources:
+        reservations:
+          devices: !reset []

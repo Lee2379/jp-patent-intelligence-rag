@@ -1,0 +1,34 @@
+{
+  "project_name": "JP Patent Intelligence RAG",
+  "corpus_name": "LLM-jp Corpus v4 Japanese patents",
+  "focus": "AI and machine-learning public patent applications",
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "generation_model": "qwen3:4b",
+  "answer_language": "ja",
+  "chunking": {
+    "scope": "patent section",
+    "max_characters": 600,
+    "overlap_characters": 80,
+    "embedding_token_limit": 512,
+    "acceptance_rule": "zero persisted chunks above embedding token limit"
+  },
+  "retrieval": {
+    "sparse": "BM25 + Sudachi",
+    "dense": "multilingual E5-small cosine similarity with query/passage prefixes",
+    "fusion": "reciprocal rank fusion",
+    "candidate_k": 40,
+    "top_k": 8
+  },
+  "governance": {
+    "audit_store": "local append-only SQLite",
+    "integrity": "canonical JSON SHA-256 hash chain",
+    "human_review_default": "pending",
+    "review_decisions": ["approved", "needs_revision", "rejected"],
+    "authenticated_identity": false
+  },
+  "cost_policy": {
+    "paid_services_allowed": false,
+    "required_cloud_accounts": false,
+    "required_api_keys": false
+  }
+}
