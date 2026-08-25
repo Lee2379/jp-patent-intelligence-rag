@@ -91,29 +91,29 @@ audit receipts in one workflow.
 retrieval, grounded generation, and governance.*
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph DATA["1 · DATA FOUNDATION"]
-        direction LR
+        direction TB
         A["Japanese patent<br/>JSONL"] --> B["Validation<br/>+ NFKC"]
         B --> C["Patent section<br/>parser"]
         C --> D["Section-aware<br/>chunks"]
     end
 
     subgraph SEARCH["2 · HYBRID RETRIEVAL"]
-        direction LR
+        direction TB
         E["BM25<br/>+ Sudachi"] --> G["Reciprocal Rank<br/>Fusion"]
         F["Multilingual<br/>E5-small"] --> G
         G --> H["Evidence<br/>gate"]
     end
 
     subgraph GENERATE["3 · GROUNDED GENERATION"]
-        direction LR
+        direction TB
         I["Ollama<br/>Qwen3 1.7B"] --> J["Citation<br/>validator"]
         J --> K["FastAPI<br/>draft"]
     end
 
     subgraph GOVERN["4 · REVIEW & GOVERNANCE"]
-        direction LR
+        direction TB
         L["Analyst<br/>UI"] --> M["Human<br/>review"]
         M --> N["Append-only<br/>audit"]
         N --> O["SHA-256 chain<br/>verification"]

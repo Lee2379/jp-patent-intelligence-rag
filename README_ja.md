@@ -21,29 +21,29 @@
 ## アーキテクチャ
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph DATA["1 · データ基盤"]
-        direction LR
+        direction TB
         A["日本語特許<br/>JSONL"] --> B["検証・正規化<br/>NFKC"]
         B --> C["特許セクション<br/>解析"]
         C --> D["セクション単位<br/>chunk"]
     end
 
     subgraph SEARCH["2 · ハイブリッド検索"]
-        direction LR
+        direction TB
         E["BM25<br/>Sudachi"] --> G["Reciprocal Rank<br/>Fusion"]
         F["多言語<br/>E5-small"] --> G
         G --> H["根拠<br/>gate"]
     end
 
     subgraph GENERATE["3 · 根拠付き生成"]
-        direction LR
+        direction TB
         I["Ollama<br/>Qwen3 1.7B"] --> J["引用<br/>検証"]
         J --> K["FastAPI<br/>draft"]
     end
 
     subgraph GOVERN["4 · REVIEW & GOVERNANCE"]
-        direction LR
+        direction TB
         U["ローカル<br/>analyst UI"] --> R["Human<br/>review"]
         R --> L["Append-only<br/>監査event"]
         L --> Z["SHA-256 chain<br/>検証"]
