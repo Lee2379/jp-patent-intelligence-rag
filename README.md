@@ -91,23 +91,45 @@ audit receipts in one workflow.
 retrieval, grounded generation, and governance.*
 
 ```mermaid
-flowchart LR
-    A[Japanese patent JSONL] --> B[Validation + NFKC]
-    B --> C[Patent section parser]
-    C --> D[Section-aware chunks]
-    D --> E[BM25 + Sudachi]
-    D --> F[Multilingual E5-small]
-    E --> G[Reciprocal Rank Fusion]
-    F --> G
-    G --> H[Evidence gate]
-    H --> I[Ollama + Qwen3 1.7B]
-    I --> J[Citation validator]
-    J --> K[FastAPI draft]
-    K --> L[Analyst UI]
-    L --> M[Human review]
-    K --> N[Append-only audit]
-    M --> N
-    N --> O[SHA-256 chain verification]
+flowchart TB
+    subgraph DATA["1 · DATA FOUNDATION"]
+        direction LR
+        A["Japanese patent<br/>JSONL"] --> B["Validation<br/>+ NFKC"]
+        B --> C["Patent section<br/>parser"]
+        C --> D["Section-aware<br/>chunks"]
+    end
+
+    subgraph SEARCH["2 · HYBRID RETRIEVAL"]
+        direction LR
+        E["BM25<br/>+ Sudachi"] --> G["Reciprocal Rank<br/>Fusion"]
+        F["Multilingual<br/>E5-small"] --> G
+        G --> H["Evidence<br/>gate"]
+    end
+
+    subgraph GENERATE["3 · GROUNDED GENERATION"]
+        direction LR
+        I["Ollama<br/>Qwen3 1.7B"] --> J["Citation<br/>validator"]
+        J --> K["FastAPI<br/>draft"]
+    end
+
+    subgraph GOVERN["4 · REVIEW & GOVERNANCE"]
+        direction LR
+        L["Analyst<br/>UI"] --> M["Human<br/>review"]
+        M --> N["Append-only<br/>audit"]
+        N --> O["SHA-256 chain<br/>verification"]
+    end
+
+    D --> E
+    D --> F
+    H --> I
+    K --> L
+    K -. generated event .-> N
+
+    classDef default fill:#ffffff,stroke:#6d5dfc,stroke-width:1.5px,color:#17152b,font-size:16px;
+    style DATA fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
+    style SEARCH fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
+    style GENERATE fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
+    style GOVERN fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
 ```
 
 The local model receives only retrieved passages that pass the configured evidence threshold.

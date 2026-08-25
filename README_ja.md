@@ -21,23 +21,45 @@
 ## アーキテクチャ
 
 ```mermaid
-flowchart LR
-    A[日本語特許JSONL] --> B[検証・正規化]
-    B --> C[特許セクション解析]
-    C --> D[セクション単位chunk]
-    D --> E[BM25 / Sudachi]
-    D --> F[多言語E5-small]
-    E --> G[RRF]
-    F --> G
-    G --> H[根拠passage]
-    H --> I[Ollama / Qwen3 1.7B]
-    I --> J[引用検証]
-    J --> K[FastAPI draft / pending]
-    K --> U[ローカルanalyst UI]
-    U --> R[Human approve / revise / reject]
-    K --> L[prompt + 根拠 + 出力の監査event]
-    R --> L
-    L --> Z[SHA-256 chain検証]
+flowchart TB
+    subgraph DATA["1 · データ基盤"]
+        direction LR
+        A["日本語特許<br/>JSONL"] --> B["検証・正規化<br/>NFKC"]
+        B --> C["特許セクション<br/>解析"]
+        C --> D["セクション単位<br/>chunk"]
+    end
+
+    subgraph SEARCH["2 · ハイブリッド検索"]
+        direction LR
+        E["BM25<br/>Sudachi"] --> G["Reciprocal Rank<br/>Fusion"]
+        F["多言語<br/>E5-small"] --> G
+        G --> H["根拠<br/>gate"]
+    end
+
+    subgraph GENERATE["3 · 根拠付き生成"]
+        direction LR
+        I["Ollama<br/>Qwen3 1.7B"] --> J["引用<br/>検証"]
+        J --> K["FastAPI<br/>draft"]
+    end
+
+    subgraph GOVERN["4 · REVIEW & GOVERNANCE"]
+        direction LR
+        U["ローカル<br/>analyst UI"] --> R["Human<br/>review"]
+        R --> L["Append-only<br/>監査event"]
+        L --> Z["SHA-256 chain<br/>検証"]
+    end
+
+    D --> E
+    D --> F
+    H --> I
+    K --> U
+    K -. generated event .-> L
+
+    classDef default fill:#ffffff,stroke:#6d5dfc,stroke-width:1.5px,color:#17152b,font-size:16px;
+    style DATA fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
+    style SEARCH fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
+    style GENERATE fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
+    style GOVERN fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
 ```
 
 ## 実行
