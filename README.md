@@ -91,32 +91,38 @@ audit receipts in one workflow.
 retrieval, grounded generation, and governance.*
 
 ```mermaid
-flowchart LR
-    subgraph DATA["1 · DATA FOUNDATION"]
-        direction TB
-        A["Japanese patent<br/>JSONL"] --> B["Validation<br/>+ NFKC"]
-        B --> C["Patent section<br/>parser"]
-        C --> D["Section-aware<br/>chunks"]
+flowchart TB
+    subgraph ROW1[" "]
+        direction LR
+        subgraph DATA["1 · DATA FOUNDATION"]
+            direction TB
+            A["Japanese patent<br/>JSONL"] --> B["Validation<br/>+ NFKC"]
+            B --> C["Patent section<br/>parser"]
+            C --> D["Section-aware<br/>chunks"]
+        end
+
+        subgraph SEARCH["2 · HYBRID RETRIEVAL"]
+            direction TB
+            E["BM25<br/>+ Sudachi"] --> G["Reciprocal Rank<br/>Fusion"]
+            F["Multilingual<br/>E5-small"] --> G
+            G --> H["Evidence<br/>gate"]
+        end
     end
 
-    subgraph SEARCH["2 · HYBRID RETRIEVAL"]
-        direction TB
-        E["BM25<br/>+ Sudachi"] --> G["Reciprocal Rank<br/>Fusion"]
-        F["Multilingual<br/>E5-small"] --> G
-        G --> H["Evidence<br/>gate"]
-    end
+    subgraph ROW2[" "]
+        direction LR
+        subgraph GENERATE["3 · GROUNDED GENERATION"]
+            direction TB
+            I["Ollama<br/>Qwen3 1.7B"] --> J["Citation<br/>validator"]
+            J --> K["FastAPI<br/>draft"]
+        end
 
-    subgraph GENERATE["3 · GROUNDED GENERATION"]
-        direction TB
-        I["Ollama<br/>Qwen3 1.7B"] --> J["Citation<br/>validator"]
-        J --> K["FastAPI<br/>draft"]
-    end
-
-    subgraph GOVERN["4 · REVIEW & GOVERNANCE"]
-        direction TB
-        L["Analyst<br/>UI"] --> M["Human<br/>review"]
-        M --> N["Append-only<br/>audit"]
-        N --> O["SHA-256 chain<br/>verification"]
+        subgraph GOVERN["4 · REVIEW & GOVERNANCE"]
+            direction TB
+            L["Analyst<br/>UI"] --> M["Human<br/>review"]
+            M --> N["Append-only<br/>audit"]
+            N --> O["SHA-256 chain<br/>verification"]
+        end
     end
 
     D --> E
@@ -130,6 +136,8 @@ flowchart LR
     style SEARCH fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
     style GENERATE fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
     style GOVERN fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
+    style ROW1 fill:transparent,stroke:transparent
+    style ROW2 fill:transparent,stroke:transparent
 ```
 
 The local model receives only retrieved passages that pass the configured evidence threshold.

@@ -21,32 +21,38 @@
 ## アーキテクチャ
 
 ```mermaid
-flowchart LR
-    subgraph DATA["1 · データ基盤"]
-        direction TB
-        A["日本語特許<br/>JSONL"] --> B["検証・正規化<br/>NFKC"]
-        B --> C["特許セクション<br/>解析"]
-        C --> D["セクション単位<br/>chunk"]
+flowchart TB
+    subgraph ROW1[" "]
+        direction LR
+        subgraph DATA["1 · データ基盤"]
+            direction TB
+            A["日本語特許<br/>JSONL"] --> B["検証・正規化<br/>NFKC"]
+            B --> C["特許セクション<br/>解析"]
+            C --> D["セクション単位<br/>chunk"]
+        end
+
+        subgraph SEARCH["2 · ハイブリッド検索"]
+            direction TB
+            E["BM25<br/>Sudachi"] --> G["Reciprocal Rank<br/>Fusion"]
+            F["多言語<br/>E5-small"] --> G
+            G --> H["根拠<br/>gate"]
+        end
     end
 
-    subgraph SEARCH["2 · ハイブリッド検索"]
-        direction TB
-        E["BM25<br/>Sudachi"] --> G["Reciprocal Rank<br/>Fusion"]
-        F["多言語<br/>E5-small"] --> G
-        G --> H["根拠<br/>gate"]
-    end
+    subgraph ROW2[" "]
+        direction LR
+        subgraph GENERATE["3 · 根拠付き生成"]
+            direction TB
+            I["Ollama<br/>Qwen3 1.7B"] --> J["引用<br/>検証"]
+            J --> K["FastAPI<br/>draft"]
+        end
 
-    subgraph GENERATE["3 · 根拠付き生成"]
-        direction TB
-        I["Ollama<br/>Qwen3 1.7B"] --> J["引用<br/>検証"]
-        J --> K["FastAPI<br/>draft"]
-    end
-
-    subgraph GOVERN["4 · REVIEW & GOVERNANCE"]
-        direction TB
-        U["ローカル<br/>analyst UI"] --> R["Human<br/>review"]
-        R --> L["Append-only<br/>監査event"]
-        L --> Z["SHA-256 chain<br/>検証"]
+        subgraph GOVERN["4 · REVIEW & GOVERNANCE"]
+            direction TB
+            U["ローカル<br/>analyst UI"] --> R["Human<br/>review"]
+            R --> L["Append-only<br/>監査event"]
+            L --> Z["SHA-256 chain<br/>検証"]
+        end
     end
 
     D --> E
@@ -60,6 +66,8 @@ flowchart LR
     style SEARCH fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
     style GENERATE fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
     style GOVERN fill:#f7f7ff,stroke:#c9c4ff,stroke-width:1px
+    style ROW1 fill:transparent,stroke:transparent
+    style ROW2 fill:transparent,stroke:transparent
 ```
 
 ## 実行
