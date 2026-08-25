@@ -20,6 +20,11 @@
 
 ## アーキテクチャ
 
+<img src="docs/architecture.svg" width="100%" alt="Japanese Patent Intelligence RAG system architecture">
+
+<details>
+<summary><strong>Mermaid実装を表示</strong></summary>
+
 ```mermaid
 flowchart TB
     subgraph ROW1[" "]
@@ -69,6 +74,8 @@ flowchart TB
     style ROW1 fill:transparent,stroke:transparent
     style ROW2 fill:transparent,stroke:transparent
 ```
+
+</details>
 
 ## 実行
 

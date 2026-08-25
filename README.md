@@ -90,6 +90,11 @@ audit receipts in one workflow.
 *End-to-end local RAG architecture — Japanese patent ingestion, section-aware parsing, hybrid
 retrieval, grounded generation, and governance.*
 
+<img src="docs/architecture.svg" width="100%" alt="Japanese Patent Intelligence RAG system architecture">
+
+<details>
+<summary><strong>View the Mermaid implementation</strong></summary>
+
 ```mermaid
 flowchart TB
     subgraph ROW1[" "]
@@ -139,6 +144,8 @@ flowchart TB
     style ROW1 fill:transparent,stroke:transparent
     style ROW2 fill:transparent,stroke:transparent
 ```
+
+</details>
 
 The local model receives only retrieved passages that pass the configured evidence threshold.
 It has no browser, shell, tools, or write access. API text is escaped before UI rendering, and
