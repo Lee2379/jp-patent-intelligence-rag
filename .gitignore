@@ -7,8 +7,13 @@ __pycache__/
 .coverage
 htmlcov/
 
-# Local configuration
+# Local configuration and secrets
 .env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
 
 # Downloaded corpora and generated indexes are reproducible, not versioned.
 data/raw/
@@ -20,6 +25,12 @@ artifacts/audit/*
 !artifacts/audit/.gitkeep
 artifacts/pilot/
 
+# Model weights and local caches
+models/
+*.bin
+*.gguf
+*.safetensors
+
 # Generated reports (keep only hand-curated examples in docs/)
 artifacts/reports/*.json
 artifacts/reports/*.html
@@ -30,3 +41,6 @@ artifacts/reports/*.png
 .idea/
 .DS_Store
 Thumbs.db
+
+# Portfolio-only draft retained locally, not part of the product repository
+docs/screenshots/portfolio-rag-processing-flow.png

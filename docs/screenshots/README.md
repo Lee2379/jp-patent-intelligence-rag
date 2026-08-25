@@ -1,20 +1,26 @@
 # Portfolio screenshots
 
-Export final images here using stable names:
+The public portfolio uses four dataset-evidence images, four primary product images, and two
+supporting product images.
 
-1. `01-dataset-source.png`
-2. `02-raw-patent-record.png`
-3. `03-data-quality.png`
-4. `04-retrieval-evaluation.png`
-5. `05-grounded-rag-answer.png`
-6. `06-source-traceability.png`
-7. `07-docker-health.png`
-8. `08-audit-trail.png`
+Dataset evidence:
 
-Optional engineering/governance detail:
+1. `01-dataset-source-huggingface.png`
+2. `02-sampling-manifest.png`
+3. `03-corpus-validation.png`
+4. `04-raw-japanese-patent-record.png`
 
-- `04a-embedding-context-audit.png`
-- `05b-human-review-approved.png`
+Primary product evidence:
 
-Follow `docs/SCREENSHOT_GUIDE.md`. Avoid committing machine-specific paths, secrets, or raw
-dataset files.
+1. `white-ui-desktop.png`
+2. `white-ui-pipeline.png`
+3. `white-ui-hitl.png`
+4. `white-ui-audit.png`
+
+Supporting product evidence:
+
+1. `white-ui-result.png`
+2. `white-ui-source-traceability.png`
+
+Follow `docs/SCREENSHOT_GUIDE.md`. Avoid committing secrets, raw corpora, generated indexes,
+model weights, local audit databases, or screenshots that reveal machine-specific user paths.

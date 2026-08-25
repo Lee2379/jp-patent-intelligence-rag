@@ -7,6 +7,14 @@ const sourceDialog = document.querySelector("#sourceDialog");
 let currentSources = [];
 let currentAuditId = null;
 const sessionId = crypto.randomUUID();
+const navItems = document.querySelectorAll(".nav-item");
+
+function setActiveNav(hash) {
+  navItems.forEach((item) => {
+    const href = item.getAttribute("href");
+    if (href?.startsWith("#")) item.classList.toggle("active", href === hash);
+  });
+}
 
 const escapeHtml = (value) => String(value)
   .replaceAll("&", "&amp;")
@@ -29,7 +37,7 @@ function sourceCard(source) {
     <h3>JP ${escapeHtml(source.document_id)}</h3>
     <div class="source-meta">${source.year} / ${escapeHtml(source.section)}</div>
     <p>${escapeHtml(preview)}</p>
-    <div class="source-footer"><span>BM25 ${source.sparse_score ?? "—"}</span><span>DENSE ${source.dense_score ?? "—"}</span><span>VIEW SOURCE ↗</span></div>
+    <div class="source-footer"><span>BM25 ${source.sparse_score ?? "—"}</span><span>DENSE ${source.dense_score ?? "—"}</span><span>View source</span></div>
   </button>`;
 }
 
@@ -114,11 +122,15 @@ async function loadStatus() {
     const stats = await statsResponse.json();
     const status = document.querySelector("#systemStatus");
     status.textContent = health.status === "ready" ? "● READY" : health.retrieval_ready ? "● RETRIEVAL READY" : "○ INDEX REQUIRED";
-    status.style.color = health.retrieval_ready ? "var(--accent)" : "var(--warm)";
+    status.style.color = health.retrieval_ready ? "var(--success)" : "var(--warning)";
     const auditStatus = document.querySelector("#auditStatus");
     auditStatus.textContent = health.audit?.chain_valid ? `✓ AUDIT ${health.audit.events}` : "! AUDIT WARNING";
-    auditStatus.style.color = health.audit?.chain_valid ? "var(--accent)" : "var(--warm)";
-    if (stats.data.documents_written) document.querySelector("#documentCount").textContent = stats.data.documents_written.toLocaleString();
+    auditStatus.style.color = health.audit?.chain_valid ? "var(--success)" : "var(--warning)";
+    if (stats.data.documents_written) {
+      const documentCount = stats.data.documents_written.toLocaleString();
+      document.querySelector("#documentCount").textContent = documentCount;
+      document.querySelector("#sidebarDocumentCount").textContent = documentCount;
+    }
     if (stats.index.documents) document.querySelector("#aiDocumentCount").textContent = stats.index.documents.toLocaleString();
   } catch (_) {
     document.querySelector("#systemStatus").textContent = "○ OFFLINE";
@@ -177,4 +189,10 @@ document.querySelectorAll("[data-decision]").forEach((button) => button.addEvent
 sourceDialog.addEventListener("click", (event) => {
   if (event.target === sourceDialog) sourceDialog.close();
 });
+navItems.forEach((item) => {
+  const href = item.getAttribute("href");
+  if (href?.startsWith("#")) item.addEventListener("click", () => setActiveNav(href));
+});
+window.addEventListener("hashchange", () => setActiveNav(window.location.hash || "#research"));
+setActiveNav(window.location.hash || "#research");
 loadStatus();

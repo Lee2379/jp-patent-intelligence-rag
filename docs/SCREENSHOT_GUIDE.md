@@ -146,3 +146,22 @@ JSON 화면은 대표 이미지로 쓰지 않습니다.
 - 테스트가 실패한 터미널
 - 설명 없이 코드만 가득한 화면
 - 현재 드라이버 경고를 대표 이미지로 사용하기
+
+## 화이트 UI 리디자인 기록
+
+2026-08-25 리디자인 검증본은 아래 경로에 저장되어 있습니다.
+
+- `docs/screenshots/white-ui-desktop.png`: 검색 전 메인 화면
+- `docs/screenshots/white-ui-pipeline.png`: 6단계 로컬 RAG 처리 흐름
+- `docs/screenshots/white-ui-result.png`: 실제 Ollama 답변과 근거가 표시된 화면
+- `docs/screenshots/white-ui-hitl.png`: 답변, audit receipt, 검토자 입력과 승인 버튼
+- `docs/screenshots/white-ui-audit.png`: 해시 체인 검증 감사 화면
+- `docs/screenshots/white-ui-source-traceability.png`: 인용 번호에서 연 원문 passage와 source path
+
+GitHub README의 대표 UI 이미지는 `white-ui-desktop.png`, 실제 기능 증거는
+`white-ui-pipeline.png`, `white-ui-result.png`, `white-ui-hitl.png`,
+`white-ui-audit.png` 순서로 배치합니다. `white-ui-result.png`와
+`white-ui-source-traceability.png`는 README의 접을 수 있는 보조 증거로 사용합니다.
+
+데이터 출처·표본 추출·검증·원문 레코드 이미지는 README 앞부분의 데이터 계보 섹션에서만
+사용하며, 앱의 6단계 처리 흐름과 섞지 않습니다.

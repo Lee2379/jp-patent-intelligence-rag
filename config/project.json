@@ -3,7 +3,7 @@
   "corpus_name": "LLM-jp Corpus v4 Japanese patents",
   "focus": "AI and machine-learning public patent applications",
   "embedding_model": "intfloat/multilingual-e5-small",
-  "generation_model": "qwen3:4b",
+  "generation_model": "qwen3:1.7b",
   "answer_language": "ja",
   "chunking": {
     "scope": "patent section",
