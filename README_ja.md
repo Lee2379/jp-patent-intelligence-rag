@@ -18,6 +18,26 @@
 - draftに対する承認・修正依頼・却下のHuman-in-the-loop review
 - FastAPI、Docker Compose、単体テスト、型検査、CI、検索評価レポート
 
+## 開発プロセスと検証記録
+
+完成画面だけでなく、Stage 0からStage 7までの開発順序、成果物、合格条件を保存しています。
+コーパス・index・model weight・audit DBはローカルに残し、再現用command、manifest、測定値、
+source code、検証snapshotのみをGitで管理します。
+
+| Stage | 実装内容 | 合格条件 | 証拠 |
+|---|---|---|---|
+| **0 · 設計** | ローカルtrust boundary、必須コスト`$0`、Docker構成、評価契約を定義 | cloud account・有料API・外部model endpointが不要 | [Architecture](docs/ARCHITECTURE.md) · [Cost & privacy](docs/COST_AND_PRIVACY.md) |
+| **1 · 取得・sampling** | LLM-jp日本語特許からSHA-256順位による再現可能な年層化1% sampleを作成 | **46,794件**、source shard countとhashを記録 | [Dataset manifest](DATASET_MANIFEST.json) · [Dataset guide](DATASET_README.md) |
+| **2 · 検証・解析** | gzip/UTF-8/JSON検証、NFKC正規化、公開番号抽出、特許section分離 | invalid **0**、empty **0**、要約coverage **99.99%**、請求項 **99.98%** | [Pipeline snapshot](docs/evidence/DATA_PIPELINE_SNAPSHOT.md) · [Parser](src/patent_rag/parsing/japanese_patent.py) |
+| **3 · chunk・index** | section-aware chunk、Sudachi BM25、384次元multilingual E5-smallを構築 | **31,270 chunks**、512-token上限超過 **0**、artifact hash一致 | [Embedding audit](docs/evidence/EMBEDDING_CONTEXT_AUDIT.md) · [Index snapshot](docs/evidence/FINAL_INDEX_AND_EVALUATION.md) |
+| **4 · 検索評価** | BM25・dense・RRF hybridを日本語および韓国語/英語queryで比較 | 日本語hybrid Recall@5 **1.000**、KO/EN hybrid Recall@5 **1.000** | [Evaluation](docs/EVALUATION.md) · [Measured results](docs/evidence/FINAL_INDEX_AND_EVALUATION.md) |
+| **5 · 根拠付き生成** | evidence gate、bounded prompt、structured output、citation allow-list、fallback、abstentionを実装 | 採用回答はretrieval済み`[S#]`だけを引用し、未許可citationは通過不可 | [Generation code](src/patent_rag/generation/ollama.py) · [Model card](docs/MODEL_CARD.md) |
+| **6 · API・UI・governance** | FastAPI、原文dialog、独立review、canonical JSONのhash-linked audit eventを実装 | draftは`pending`開始、reviewは上書きせずappend、chain検証valid | [Audit & HITL](docs/AUDIT_AND_HITL.md) · [E2E evidence](docs/evidence/AUDIT_HITL_E2E_SNAPSHOT.md) |
+| **7 · Runtime検証** | Dockerで検索→local生成→review→audit検証→CIをend-to-end実行 | `JP2020151725`がtop、non-root app、24-event chain valid、**30 tests** | [Docker evidence](docs/evidence/DOCKER_OLLAMA_SNAPSHOT.md) · [Build log](docs/BUILD_LOG.md) · [CI](https://github.com/Lee2379/jp-patent-intelligence-rag/actions) |
+
+command、処理時間、artifact hash、失敗した試行と採用した修正を含む時系列記録は
+[BUILD_LOG](docs/BUILD_LOG.md)に保存しています。
+
 ## アーキテクチャ
 
 <img src="docs/architecture.svg" width="100%" alt="Japanese Patent Intelligence RAG system architecture">

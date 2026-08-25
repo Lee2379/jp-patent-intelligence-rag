@@ -57,6 +57,28 @@ claim, publication metadata, and traceable source path.*
 See [DATASET_README.md](DATASET_README.md), [DATASET_MANIFEST.json](DATASET_MANIFEST.json),
 and the [local dataset card](docs/sources/LLM_JP_DATASET_CARD.md) for provenance and attribution.
 
+## Development process and verification trail
+
+This repository preserves the completed build sequence, not only the final interface. Every
+stage has an explicit output, acceptance gate, and durable evidence file. Generated corpora,
+indexes, model weights, and audit databases remain local; manifests, measurements, source code,
+and reproducible commands are versioned here.
+
+| Stage | Engineering work | Acceptance gate | Evidence |
+|---|---|---|---|
+| **0 · Architecture** | Defined a laptop-only trust boundary, `$0` required-service policy, Docker topology, and evaluation contract | No cloud account, paid API, or external model endpoint required | [Architecture](docs/ARCHITECTURE.md) · [Cost & privacy](docs/COST_AND_PRIVACY.md) |
+| **1 · Acquisition & sampling** | Mirrored the LLM-jp Japanese patent shards and created a deterministic SHA-256-ranked, year-stratified 1% sample | **46,794** selected records; source shard counts and hashes recorded | [Dataset manifest](DATASET_MANIFEST.json) · [Dataset guide](DATASET_README.md) |
+| **2 · Validation & parsing** | Validated gzip/UTF-8/JSON, normalized NFKC text, extracted publication IDs, and separated patent sections | **0** invalid JSON, **0** empty text; abstract coverage **99.99%**, claim coverage **99.98%** | [Pipeline snapshot](docs/evidence/DATA_PIPELINE_SNAPSHOT.md) · [`japanese_patent.py`](src/patent_rag/parsing/japanese_patent.py) |
+| **3 · Chunking & indexing** | Built bounded section chunks, Sudachi BM25, and 384-dimensional multilingual E5-small embeddings | **31,270** chunks; all persisted chunks fit the 512-token model limit; artifact hashes matched | [Embedding audit](docs/evidence/EMBEDDING_CONTEXT_AUDIT.md) · [Index snapshot](docs/evidence/FINAL_INDEX_AND_EVALUATION.md) |
+| **4 · Retrieval evaluation** | Compared sparse, dense, and RRF hybrid retrieval on Japanese and KO/EN regression sets | Japanese hybrid Recall@5 **1.000**; KO/EN hybrid Recall@5 **1.000** | [Evaluation protocol](docs/EVALUATION.md) · [Measured results](docs/evidence/FINAL_INDEX_AND_EVALUATION.md) |
+| **5 · Grounded generation** | Added evidence gating, bounded Ollama prompts, structured output, citation allow-listing, fallback, and abstention | Every accepted answer cites retrieved `[S#]` IDs; unsupported citations cannot pass validation | [`ollama.py`](src/patent_rag/generation/ollama.py) · [Model card](docs/MODEL_CARD.md) |
+| **6 · API, UI & governance** | Implemented typed FastAPI endpoints, source dialogs, independent review decisions, and canonical JSON hash-linked audit events | Drafts start `pending`; review appends rather than overwrites; chain verification returns valid | [Audit & HITL design](docs/AUDIT_AND_HITL.md) · [E2E evidence](docs/evidence/AUDIT_HITL_E2E_SNAPSHOT.md) |
+| **7 · Runtime verification** | Ran the Docker workflow from retrieval through local generation, review, audit verification, and CI quality gates | Top result `JP2020151725`; non-root app; valid 24-event chain; Ruff, strict mypy, **30 tests** | [Docker evidence](docs/evidence/DOCKER_OLLAMA_SNAPSHOT.md) · [Build log](docs/BUILD_LOG.md) · [CI](https://github.com/Lee2379/jp-patent-intelligence-rag/actions) |
+
+The full chronological record—including commands, measured timings, artifact hashes, failures,
+and accepted replacements—is retained in the [build log](docs/BUILD_LOG.md). This makes the
+portfolio auditable without committing the licensed corpus or machine-specific runtime state.
+
 ## Product overview
 
 ![Local Japanese Patent Intelligence RAG](docs/screenshots/white-ui-desktop.png)
