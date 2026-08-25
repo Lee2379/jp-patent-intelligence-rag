@@ -1,12 +1,5 @@
 # Japanese Patent Intelligence RAG
 
-[![CI](https://github.com/Lee2379/jp-patent-intelligence-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/Lee2379/jp-patent-intelligence-rag/actions/workflows/ci.yml)
-![Python 3.11](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-local_API-009688?logo=fastapi&logoColor=white)
-![Ollama](https://img.shields.io/badge/Ollama-qwen3%3A1.7b-black)
-![Cost](https://img.shields.io/badge/required_cost-%240-success)
-![License](https://img.shields.io/badge/code-Apache--2.0-blue)
-
 [日本語](README_ja.md) · **English**
 
 A fully local, multilingual technical prior-art exploration assistant for Japanese AI patents.
