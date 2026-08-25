@@ -215,21 +215,6 @@ and reports the checked event count, current head hash, and validity. This makes
 detectable; production deployment would additionally require authenticated users, access
 control, remote immutable storage, retention policy, and external timestamps.
 
-## Evaluation
-
-| Check | Result | Interpretation |
-|---|---:|---|
-| Japanese silver benchmark, 30 queries | Recall@5 **1.000**, MRR@10 **1.000** | Deterministic retrieval regression test |
-| Korean/English smoke set, 6 queries | Recall@5 **1.000**, MRR@10 **0.700** | Cross-lingual path smoke check |
-| Citation invariants | Enforced | Only retrieved source IDs may be cited |
-| Quality gates | Ruff, strict mypy, **30 tests** | Local and CI verification |
-| Docker E2E | Retrieval → Ollama → review → valid audit chain | Full workflow check |
-
-These results are engineering regression checks, not a statistically powered relevance study
-or expert patentability opinion. The Japanese benchmark is abstract-derived, and the multilingual
-set is intentionally small. See [Evaluation](docs/EVALUATION.md) and the
-[Model Card](docs/MODEL_CARD.md) for methodology and limitations.
-
 ## Quick start
 
 Prerequisites: Docker Desktop and Python 3.11. An NVIDIA GPU is optional; CPU inference works.
