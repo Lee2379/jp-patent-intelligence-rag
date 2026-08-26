@@ -1,6 +1,6 @@
 # Japanese Patent Intelligence RAG
 
-[日本語](README_ja.md) · **English**
+[日本語](japanese-readme.md) · **English**
 
 A fully local, multilingual technical prior-art exploration assistant for Japanese AI patents.
 It combines patent-aware parsing, Japanese lexical retrieval, multilingual embeddings,
