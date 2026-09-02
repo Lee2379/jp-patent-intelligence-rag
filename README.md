@@ -2,13 +2,15 @@
 
 [日本語](japanese-readme.md) · **English**
 
-A fully local, multilingual technical prior-art exploration assistant for Japanese AI patents.
-It combines patent-aware parsing, Japanese lexical retrieval, multilingual embeddings,
-grounded local generation, citation-level source inspection, human review, and a
-tamper-evident audit trail.
+## Project summary
 
-> **Technical prior-art exploration assistant — not legal advice.** No cloud account, API key,
-> paid API, or metered service is required.
+- **Problem:** Japanese patent search is difficult to review when keyword matching, multilingual queries, generated answers, and reviewer decisions are handled in separate tools.
+- **What I built:** A local search application that parses patent sections, combines Sudachi BM25 with multilingual embeddings, shows the source passages used in each answer, and records reviewer decisions in an append-only hash chain.
+- **Result:** The pipeline validated 46,794 sampled records, indexed 505 AI-domain documents into 31,270 chunks, and passes 30 unit and API tests. The retrieval benchmark and its limits are documented in [`docs/EVALUATION.md`](docs/EVALUATION.md).
+- **My role:** I designed the retrieval and review workflow, implemented the parser, indexes, generation checks, FastAPI service, web interface, audit log, Docker setup, and evaluation code.
+- **Review or run:** See the [interface walkthrough](#product-overview) or follow the [Quick start](#quick-start) to run the application locally without a paid API.
+
+> **Scope:** This tool supports technical prior-art exploration; it does not provide legal advice or determine patentability, ownership, or freedom to operate.
 
 ## Data provenance and preparation
 
@@ -24,7 +26,7 @@ approximately 4.68 million documents and is distributed under CC BY 4.0.*
 
 ![Reproducible sampling manifest](docs/screenshots/02-sampling-manifest.png)
 
-*Figure 2. Reproducible sampling manifest. A deterministic year-stratified sample of 46,794
+*Figure 2. Reproducible sampling manifest. A hash-ranked, year-stratified sample of 46,794
 documents was created from an estimated 4,679,385 source records; each curated shard records
 its SHA-256 checksum.*
 
@@ -60,7 +62,7 @@ and reproducible commands are versioned here.
 | Stage | Engineering work | Acceptance gate | Evidence |
 |---|---|---|---|
 | **0 · Architecture** | Defined a laptop-only trust boundary, `$0` required-service policy, Docker topology, and evaluation contract | No cloud account, paid API, or external model endpoint required | [Architecture](docs/ARCHITECTURE.md) · [Cost & privacy](docs/COST_AND_PRIVACY.md) |
-| **1 · Acquisition & sampling** | Mirrored the LLM-jp Japanese patent shards and created a deterministic SHA-256-ranked, year-stratified 1% sample | **46,794** selected records; source shard counts and hashes recorded | [Dataset manifest](DATASET_MANIFEST.json) · [Dataset guide](DATASET_README.md) |
+| **1 · Acquisition & sampling** | Mirrored the LLM-jp Japanese patent shards and created a SHA-256-ranked, year-stratified 1% sample | **46,794** selected records; source shard counts and hashes recorded | [Dataset manifest](DATASET_MANIFEST.json) · [Dataset guide](DATASET_README.md) |
 | **2 · Validation & parsing** | Validated gzip/UTF-8/JSON, normalized NFKC text, extracted publication IDs, and separated patent sections | **0** invalid JSON, **0** empty text; abstract coverage **99.99%**, claim coverage **99.98%** | [Pipeline snapshot](docs/evidence/DATA_PIPELINE_SNAPSHOT.md) · [`japanese_patent.py`](src/patent_rag/parsing/japanese_patent.py) |
 | **3 · Chunking & indexing** | Built bounded section chunks, Sudachi BM25, and 384-dimensional multilingual E5-small embeddings | **31,270** chunks; all persisted chunks fit the 512-token model limit; artifact hashes matched | [Embedding audit](docs/evidence/EMBEDDING_CONTEXT_AUDIT.md) · [Index snapshot](docs/evidence/FINAL_INDEX_AND_EVALUATION.md) |
 | **4 · Retrieval evaluation** | Compared sparse, dense, and RRF hybrid retrieval on Japanese and KO/EN regression sets | Japanese hybrid Recall@5 **1.000**; KO/EN hybrid Recall@5 **1.000** | [Evaluation protocol](docs/EVALUATION.md) · [Measured results](docs/evidence/FINAL_INDEX_AND_EVALUATION.md) |
@@ -83,7 +85,7 @@ The interface is an analyst workspace rather than a generic chat demo. It expose
 filters, retrieval mode, model state, evidence policy, source passages, reviewer decisions, and
 audit receipts in one workflow.
 
-## What this project demonstrates
+## Implemented capabilities
 
 - **Japanese patent NLP:** Unicode normalization and section-aware extraction of abstracts,
   individual claims, technical fields, backgrounds, and detailed descriptions.
@@ -95,14 +97,14 @@ audit receipts in one workflow.
   `[S#]` citations, evidence gating, and extractive fallback or abstention on failure.
 - **Operational AI controls:** independent human approve/revise/reject decisions and append-only
   SHA-256-linked events for prompts, passages, outputs, timings, and reviews.
-- **Engineering discipline:** typed FastAPI contracts, Docker Compose, deterministic tests,
+- **Engineering discipline:** typed FastAPI contracts, Docker Compose, repeatable tests,
   retrieval evaluation, Ruff, strict mypy, CI, runbooks, model card, and threat boundaries.
 
-## End-to-end architecture
+## Local RAG architecture
 
-![End-to-end local RAG architecture](docs/screenshots/white-ui-pipeline.png)
+![Local RAG architecture](docs/screenshots/white-ui-pipeline.png)
 
-*End-to-end local RAG architecture — Japanese patent ingestion, section-aware parsing, hybrid
+*Local RAG architecture — Japanese patent ingestion, section-aware parsing, hybrid
 retrieval, grounded generation, and governance.*
 
 <img src="docs/architecture.svg" width="100%" alt="Japanese Patent Intelligence RAG system architecture">
@@ -203,11 +205,11 @@ Answers begin in `pending`. The reviewer label must differ from the analyst labe
 decision event is recorded without overwriting the generated draft. These labels are workflow
 identifiers for this local portfolio build, not authenticated identities.
 
-## Tamper-evident audit trail
+## Append-only audit history
 
-![Tamper-evident audit trail](docs/screenshots/white-ui-audit.png)
+![Append-only audit history](docs/screenshots/white-ui-audit.png)
 
-*Tamper-evident audit trail — prompts, retrieval evidence, model outputs, and human decisions
+*Append-only audit history — prompts, retrieval evidence, model outputs, and human decisions
 are linked through an append-only SHA-256 chain.*
 
 Each canonical JSON event stores the preceding event hash. Verification recomputes the chain
@@ -252,7 +254,7 @@ src/patent_rag/retrieval/ BM25, dense retrieval, RRF, evaluation
 src/patent_rag/generation/ Ollama prompting and citation guard
 src/patent_rag/api/       FastAPI application and typed contracts
 src/patent_rag/audit.py   append-only SQLite events and hash-chain verification
-tests/                    deterministic unit and API tests
+tests/                    repeatable unit and API tests
 docs/                     architecture, evidence, evaluation, runbook, model card
 ```
 
